@@ -17,6 +17,10 @@ public struct Block: Shape3D {
         self.height = height
     }
 
+    public init(size: Units3D) {
+        self.init(size: size.base, height: Double(size.z) * Units3D.size.z)
+    }
+
     public var body: any Geometry3D {
         base
             .repeated(along: .x, step: Units2D.size.x, count: size.x)

@@ -29,7 +29,7 @@ public struct Bin: Shape3D {
         wallThickness: Double = 1.0,
         bottomThickness: Double = 0.6,
         innerBottomCornerRadius: Double = 1.0,
-        withStackingLip: Bool
+        withStackingLip: Bool = false
     ) {
         self.block = Block(size: Units2D(x: size.x, y: size.y), height: Double(size.z) * Units3D.size.z)
         self.useStackingLip = withStackingLip

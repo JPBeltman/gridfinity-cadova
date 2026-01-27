@@ -10,11 +10,18 @@ public struct Block: Shape3D {
     public let size: Units2D
     /// The total height of the block in millimeters.
     public let height: Double
+    public let useMagnet: Bool
     let base = Base()
-
-    public init(size: Units2D, height: Double) {
+    
+	let magnetInset = 8.0
+	let magnetDiameter = 6.5
+	let magnetDepth = 2.2
+	let magnetMargin = 3.0
+    
+    public init(size: Units2D, height: Double, withMagnet: Bool = false) {
         self.size = size
         self.height = height
+        self.useMagnet = withMagnet
     }
 
     public init(size: Units3D) {
@@ -23,6 +30,30 @@ public struct Block: Shape3D {
 
     public var body: any Geometry3D {
         base
+        .subtracting{
+				if useMagnet {
+					Cylinder(diameter: magnetDiameter, height: magnetDepth)
+						.translated(x: magnetInset, y: magnetInset, z: 0)
+						.translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
+						.symmetry(over: .xy)
+						.translated(x: Units2D.size.x / 2, y: Units2D.size.x / 2);
+					Cylinder(diameter: magnetDiameter, height: magnetDepth)
+						.translated(x: magnetInset, y: magnetInset, z: 0)
+						.translated(x: Units2D.size.x / 2, y: -Units2D.size.x / 2)
+						.symmetry(over: .xy)
+						.translated(x: Units2D.size.x / 2, y: Units2D.size.x / 2);
+					Cylinder(diameter: magnetDiameter, height: magnetDepth)
+						.translated(x: magnetInset, y: magnetInset, z: 0)
+						.translated(x: -Units2D.size.x / 2, y: Units2D.size.x / 2)
+						.symmetry(over: .xy)
+						.translated(x: Units2D.size.x / 2, y: Units2D.size.x / 2);
+					Cylinder(diameter: magnetDiameter, height: magnetDepth)
+						.translated(x: magnetInset, y: magnetInset, z: 0)
+						.translated(x: Units2D.size.x / 2, y: Units2D.size.x / 2)
+						.symmetry(over: .xy)
+						.translated(x: Units2D.size.x / 2, y: Units2D.size.x / 2)
+				}
+			}
             .repeated(along: .x, step: Units2D.size.x, count: size.x)
             .repeated(along: .y, step: Units2D.size.y, count: size.y)
             .measuringBounds { bases, bounds in

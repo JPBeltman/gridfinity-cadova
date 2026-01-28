@@ -30,18 +30,16 @@ public struct Block: Shape3D {
 
     public var body: any Geometry3D {
         base
+            .subtracting {
+                if useMagnet {
+                    Cylinder(diameter: magnetDiameter, height: magnetDepth)
+                        .translated(x: magnetInset, y: magnetInset, z: 0)
+                        .translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
+                        .symmetry(over: .xy)
+                }
+            }
             .repeated(along: .x, step: Units2D.size.x, count: size.x)
             .repeated(along: .y, step: Units2D.size.y, count: size.y)
-			.subtracting{
-					if useMagnet {
-						Cylinder(diameter: magnetDiameter, height: magnetDepth)
-							.translated(x: magnetInset, y: magnetInset, z: 0)
-							.translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
-							.symmetry(over: .xy)
-							.repeated(along: .y, step: Units2D.size.y, count: size.y)
-							.repeated(along: .x, step: Units2D.size.x, count: size.x);
-					}
-			}
             .measuringBounds { bases, bounds in
                 Stack(.z) {
                     bases

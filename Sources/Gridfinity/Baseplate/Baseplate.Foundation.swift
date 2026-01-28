@@ -9,6 +9,8 @@ extension Baseplate {
         let addMagnetSlots: Bool
         let addTabs: Bool
         let addScrewHoles: Bool
+        let addCenterMagnetSlot: Bool
+
 
         static let bolt = Bolt.hexSocketCountersunk(.m3, length: 6)
         static let nut = Nut.square(.m3, series: .thin)
@@ -36,6 +38,21 @@ extension Baseplate {
                             .repeated(along: .y, step: Units2D.size.y, count: size.y)
                             .intersecting { outline }
                     }
+                    if addCenterMagnetSlot {
+						Rectangle(Units2D.size.x)
+							.subtracting {
+								Rectangle( Units2D.size.x / 2 - 1.5) //width of the structs
+									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0), on: .maxXmaxY)
+									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0 ), on: .maxXminY)
+									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0), on: .minXmaxY)
+									.translated(x: -Units2D.size.x / 2, y: -Units2D.size.y / 2)
+									.symmetry(over: .xy)
+									.translated(x:  Units2D.size.x / 2, y:  Units2D.size.y / 2)
+							}
+							.repeated(along: .x, step: Units2D.size.x, count: size.x)
+							.repeated(along: .y, step: Units2D.size.y, count: size.y)
+							.intersecting { outline } // Doesn't seem to do anything here now, saw it reduce clipping when I had a misalignment so keeping it
+					}
                 }
                 .rounded(insideRadius: addMagnetSlots ? 3 : nil)
                 .extruded(height: height)
@@ -60,6 +77,13 @@ extension Baseplate {
                             .repeated(along: .x, step: Units2D.size.x, count: size.x)
                             .repeated(along: .y, step: Units2D.size.y, count: size.y)
                     }
+                    if addCenterMagnetSlot {
+						Cylinder(diameter: magnetDiameter, height: magnetDepth)
+							.translated(x: -Units2D.size.x / 2, y: -Units2D.size.y / 2, z: height - magnetDepth  + 0.0000001) //getting weird bridge-strings on top of surface without +0.00001 (0.00000000000001 works too..)
+							.symmetry(over: .xy)
+							.repeated(along: .x, step: Units2D.size.x, count: size.x)
+							.repeated(along: .y, step: Units2D.size.y, count: size.y);
+					}
 
                     if addTabs {
                         tab.negativePair

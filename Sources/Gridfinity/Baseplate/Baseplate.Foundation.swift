@@ -41,14 +41,27 @@ extension Baseplate {
                     if addCenterMagnetSlot {
 						Rectangle(Units2D.size.x)
 							.subtracting {
-								Rectangle( Units2D.size.x / 2 - 1.5) //width of the structs
+								Rectangle( Units2D.size.x / 2 + 7 ) //width of the structs
 									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0), on: .maxXmaxY)
-									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0 ), on: .maxXminY)
-									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0), on: .minXmaxY)
-									.translated(x: -Units2D.size.x / 2, y: -Units2D.size.y / 2)
+									.translated(x: -Units2D.size.x / 2 - 8, y: -Units2D.size.y / 2 - 8)
 									.symmetry(over: .xy)
-									.translated(x:  Units2D.size.x / 2, y:  Units2D.size.y / 2)
+									.translated(x:  Units2D.size.x / 2 + 8, y:  Units2D.size.y / 2 + 8)
+									.rotated(45°)
+									.translated(x: 21,y: -20)
+									
 							}
+						// Following snippet creates a support for the centermagnet in the form of a plus sign instead of a cross like above, 
+						// doesn't work well when used together with screws  
+//						Rectangle(Units2D.size.x)
+//							.subtracting {
+//								Rectangle( Units2D.size.x / 2 - 1.5) //width of the structs
+//									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0), on: .maxXmaxY)
+//									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0 ), on: .maxXminY)
+//									.cuttingEdgeProfile(.fillet(radius:  magnetDiameter / 2 + magnetMargin + 2.0), on: .minXmaxY)
+//									.translated(x: -Units2D.size.x / 2, y: -Units2D.size.y / 2)
+//									.symmetry(over: .xy)
+//									.translated(x:  Units2D.size.x / 2, y:  Units2D.size.y / 2)
+//							}
 							.repeated(along: .x, step: Units2D.size.x, count: size.x)
 							.repeated(along: .y, step: Units2D.size.y, count: size.y)
 							.intersecting { outline } // Doesn't seem to do anything here now, saw it reduce clipping when I had a misalignment so keeping it
